@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .parent-container{
+            width: 45%;
+            margin: auto;
+        }
+        .parent-container input{
+            padding:5px 10px;
+            width: 70%;
+        }
+        .parent-container button{
+            padding: 7px 10px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .result-container{
+            width: 90%;
+        }
+        .city-card{
+            box-shadow: 0px 1px 4px rgba(0,0,0,0.6);
+            width: 30%;
+            margin: auto;
+            margin-top: 30px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .city-card span{
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <form id="form" class="parent-container">
+        <input 
+            type="text"
+            placeholder="Enter city name"
+            id="city-name"/>
+        <button>Submit</button>
+    </form>
+    <div id="result" class="result-container"></div>
+    <script>
+        var form=document.getElementById("form")
+        var result=document.getElementById("result")
+        var cityName=document.getElementById("city-name")
+        var apikey="230e12329ff9b0b413a455539900947a"
+        form.addEventListener("submit",(e)=>{
+            e.preventDefault()
+            var apiurl=`https://api.openweathermap.org/data/2.5/weather?q=${cityName.value}&appid=${apikey}&units=metric` 
+            fetch(apiurl)
+                .then((res)=>{
+                    //console.log(res)
+                    return res.json()
+                })
+                .then((res)=>{
+                    //console.log(res)
+                    if(res.cod=="404"){
+                        alert("city not found")
+                        return false
+                    }
+                    var weatherData={
+                        temp:res.main.temp,
+                        country:res.sys.country,
+                        name:res.name
+                    }
+                    displayResult(weatherData)
+                })
+        })
+        function displayResult(weatherData){
+            console.log(weatherData)
+            result.innerHTML=`
+                <div class="city-card">
+                    <p>
+                        <span>Name</span>: ${weatherData.name}
+                    </p>
+                    <p>
+                        <span>Temp</span>:
+                         ${weatherData.temp} <sup>0</sup></p>
+                    <p><span>Country</span>:${weatherData.country}</p>
+                </div>
+            `
+        }
+    </script>
+</body>
+</html>
